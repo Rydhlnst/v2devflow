@@ -43,45 +43,45 @@ body {
 
   .auth-bg {
     background-image: url("/images/auth-light.png");
-  }
+  };
   .dark .auth-bg {
     background-image: url("/images/auth-dark.png");
-  }
+  };
 
    /* Background utilities */
    .background-light850_dark100 {
-    background-color: var(--color-light-850), var(--color-dark-100);
-  }
+    background-color: var(--color-light-850);
+  };
   .background-light900_dark200 {
-    background-color: var(--color-light-900, var(--color-dark-200));
-  }
+    background-color: var(--color-light-900);
+  };
 
   .background-light900_dark300 {
-    background-color: var(--color-light-900, var(--color-dark-300));
-  }
+    background-color: var(--color-light-900);
+  };
 
   .background-light800_darkgradient {
     background-color: var(--color-light-800);
-  }
+  };
 
   .dark .background-light850_dark100 {
     background-color: var(--color-dark-100);
-  }
+  };
 
   .dark .background-light900_dark200 {
     background-color: var(--color-dark-200);
-  }
+  };
 
   .dark .background-light900_dark300 {
     background-color: var(--color-dark-300);
-  }
+  };
   .dark .background-light800_darkgradient {
     background: linear-gradient(232deg, rgba(23, 28, 35, 0.41) 0%, rgba(19, 22, 28, 0.7) 100%);
-  }
+  };
 
   .background-light800_dark400 {
     background-color: var(--color-light-800);
-  }
+  };
   .dark .background-light800_dark400 {
     background-color: var(--color-dark-400);
   }
