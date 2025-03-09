@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local"
 import ThemeProvider from "@/context/Themes";
+import { Toaster } from "sonner";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
   title: "DevFlow",
@@ -23,20 +26,26 @@ const spacegrotesk = localFont({
   weight: "100 200 300 400 500 600 700 800 900"
 })
 
-export default function RootLayout({
+const Layout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
+  const session = await auth();
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} ${spacegrotesk.variable} antialiased`}
-      >
-        <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
-      </body>
+      <SessionProvider session={session}>
+        <body
+          className={`${inter.className} ${spacegrotesk.variable} antialiased`}
+        >
+          <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+          </ThemeProvider>
+          <Toaster/>
+        </body>
+      </SessionProvider>
     </html>
   );
 }
+
+export default Layout;
