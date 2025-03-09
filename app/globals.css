@@ -41,6 +41,13 @@ body {
 
 @layer components {
 
+  .auth-bg {
+    background-image: url("/images/auth-light.png");
+  }
+  .dark .auth-bg {
+    background-image: url("/images/auth-dark.png");
+  }
+
    /* Background utilities */
    .background-light850_dark100 {
     background-color: var(--color-light-850), var(--color-dark-100);
