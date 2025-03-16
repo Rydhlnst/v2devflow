@@ -1,4 +1,4 @@
-import { error } from "console";
+
 import mongoose, {Mongoose} from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
@@ -28,7 +28,7 @@ const dbConnect = async ():Promise<Mongoose> => {
     if(cached.conn) {
         return cached.conn;
     }
-    
+
     if(!cached.promise) {
         cached.promise = mongoose.connect(MONGODB_URI, {
             dbName: "devflow"
