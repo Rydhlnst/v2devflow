@@ -23,11 +23,12 @@ if(!cached) {
     cached = global.mongoose = {conn: null, promise: null}
 }
 
+
 const dbConnect = async ():Promise<Mongoose> => {
     if(cached.conn) {
         return cached.conn;
     }
-
+    
     if(!cached.promise) {
         cached.promise = mongoose.connect(MONGODB_URI, {
             dbName: "devflow"
