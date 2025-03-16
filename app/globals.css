@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -10,7 +11,7 @@ body {
 
 @theme {
   --color-primary-100: #FFF1E6;
-  --color-primary-200: #FF7000;
+  --color-primary-500: #FF7000;
   --color-dark-100: #000000;
   --color-dark-200: #0F1117;
   --color-dark-300: #151821;
