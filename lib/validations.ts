@@ -16,3 +16,15 @@ export const QuestionSchema = z.object({
     content: z.string().min(1, {message: "Body is required"}).max(1000, {message: "Body cannot exceed 1000 characters"}),
     tags: z.array(z.string().min(1, {message: "Tag is required"}).max(30, {message: "Tag cannot exceed 30 characters"})).min(1, {message: "At least one tag is required"}).max(3, {message: "Cannot have more than 3 tags"})
 })
+
+// Front End
+export const UserSchema = z.object({
+    name: z.string().min(1, {message: "Name is required"}),
+    username: z.string().min(3, {message: "Username must be at least 3 characters"}),
+    email: z.string().email({message: "Please provice a valid email address"}),
+    bio: z.string().optional(),
+    image: z.string().url({message: "Please provide a valid URL."}).optional(),
+    location: z.string().optional(),
+    portfolio: z.string().url({message: "Please provide a valid URL."}).optional(),
+    reputation: z.number().optional(),
+})
