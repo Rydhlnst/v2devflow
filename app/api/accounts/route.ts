@@ -31,7 +31,9 @@ export async function POST(request: Request) {
         const validatedDate = AccountSchema.parse(body);
 
         const existingAccount = await Account.findOne({
+            // Apakah ada email yang sama
             provider: validatedDate.provider,
+            // Apakah ada id yang sama dengan email tadi
             providerAccountId: validatedDate.providerAccountId
         })
         
