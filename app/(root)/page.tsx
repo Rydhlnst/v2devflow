@@ -1,10 +1,20 @@
+import { auth } from "@/auth";
 import QuestionCards from "@/components/cards/QuestionCards";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { api } from "@/lib/api";
+import handleError from "@/lib/handlers/error";
 import Link from "next/link";
 
+const test = async () => {
+  try {
+    return await api.users.getAll();
+  } catch (error) {
+    return handleError(error)
+  }
+}
 
 
 const questions = [
@@ -29,6 +39,12 @@ interface SearchParams {
 }
 
 const Home = async ({searchParams}: SearchParams) => {
+  
+  const users = await test();
+  console.log(users)
+  const session = await auth();
+
+  console.log("Session: ", session);
   const {query = "", filter = ""} = await searchParams;
 
   // Ga pakai kurung kurawal

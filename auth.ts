@@ -9,10 +9,6 @@ import { ActionResponse } from "./types/global";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [GitHub, Google],
   callbacks: {
-    async session({ session, token }) {
-      session.user.id = token.sub as string;
-      return session;
-    },
     async jwt({ token, account }) {
       if (account) {
         const { data: existingAccount, success } =
@@ -31,11 +27,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
+    async session({ session, token }) {
+      session.user.id = token.sub as string;
+      return session
+    },
     async signIn({ user, profile, account }) {
-      
-
-      if (account?.type === "credentials") return true;
-
+      if (account?.type === 'credentials') return true;
       if (!account || !user) return false;
 
       const userInfo = {
@@ -57,5 +54,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!success) return false;
 
       return true;
-    }
-  }})
+    },
+  },
+});
