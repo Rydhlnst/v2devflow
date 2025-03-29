@@ -40,4 +40,4 @@ type APIErrorResponse = NextResponse<ErrorResponse>;
 type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
 
 export {Question, Tag, Author}
-export type {APIErrorResponse, APIResponse, ActionResponse}
+export type {APIErrorResponse, APIResponse, ActionResponse, ErrorResponse}

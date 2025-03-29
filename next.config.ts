@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "static.vecteezy.com",
         port: "443",
+      }, 
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: ""
       }
     ]
   }

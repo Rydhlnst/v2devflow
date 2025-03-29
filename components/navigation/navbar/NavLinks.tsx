@@ -8,9 +8,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
-const NavLinks = ({isMobileNav = false}: {isMobileNav?: boolean}) => {
+const NavLinks = ({isMobileNav = false, userId}: {isMobileNav?: boolean, userId?: string }) => {
   const pathname = usePathname();
-  const userId = 1;
   return (
     <>{sidebarLinks.map((item) => {
       const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
