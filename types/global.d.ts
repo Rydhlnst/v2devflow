@@ -41,3 +41,12 @@ type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
 
 export {Question, Tag, Author}
 export type {APIErrorResponse, APIResponse, ActionResponse, ErrorResponse}
+
+interface RouterParams {
+  params: Promise<Record<string, string>>;
+  // Params: /questions/:id
+  searchParams: Promise<Record<string, string>>;
+  // SearchParams: /questions?tag=javascript
+}
+
+export {RouterParams}
