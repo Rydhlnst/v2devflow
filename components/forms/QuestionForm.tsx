@@ -7,7 +7,7 @@ import React, { useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { EditQuestionSchema, QuestionSchema } from "@/lib/validations";
+import { QuestionSchema } from "@/lib/validations";
 
 import { Button } from "../ui/button";
 import {
@@ -21,7 +21,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import TagCards from "../cards/TagCards";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
@@ -94,7 +94,7 @@ const QuestionForm = ({question, isEdit = false}: Params) => {
     startTransition(async () => {
 
       if(isEdit && question) {
-        const result = await EditQuestionSchema({questionId: question?._id, ...data});
+        const result = await editQuestion({questionId: question?._id, ...data});
         if(result.success) {
           toast("Success", {
             description: "Question Updated Successfully"
