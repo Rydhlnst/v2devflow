@@ -14,6 +14,7 @@ interface Author {
 interface Question {
     _id: string;
     title: string;
+    content: string;
     tags: {_id: string; name: string}[];
     tags: Tag[];
     author: Author;
@@ -49,4 +50,12 @@ interface RouterParams {
   // SearchParams: /questions?tag=javascript
 }
 
-export {RouterParams}
+interface PaginatedSearchParams {
+  page?: number;
+  pageSize?: number;
+  query?: string;
+  filter?: string;
+  sort?: string
+}
+
+export {RouterParams, PaginatedSearchParams}

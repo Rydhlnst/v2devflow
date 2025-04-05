@@ -5,7 +5,7 @@ import React from 'react'
 
 const AskAQuestion = async () => {
   const session = await auth();
-if (!session) return redirect("/sign-in");
+  if (!session) return redirect("/sign-in");
   return (
     <>
       <h1 className='h1-bold text-dark100_light900'>Ask a Public Question</h1>

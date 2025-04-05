@@ -1,3 +1,4 @@
+
 import {z} from "zod"
 
 export const SignInSchema = z.object({
@@ -60,4 +61,20 @@ export const SignInWithOAuthSchema = z.object({
         email: z.string().email({message: "Please provide a valid email address"}),
         image: z.string().url("Invalid image URL").optional()
     })
+})
+
+export const paginatedSearchParamsSchema = z.object({
+    page: z.number().int().positive().default(1),
+    pageSize: z.number().int().positive().default(10),
+    query: z.string().optional(),
+    filter: z.string().optional(),
+    sort: z.string().optional(),
+})
+
+export const EditQuestionSchema = QuestionSchema.extend({
+    questionId: z.string().min(1, {message: "Question ID is required"}),
+})
+
+export const GetQuestionSchema = z.object({
+    questionId: z.string().min(1, {message: "Question ID is required"}),
 })

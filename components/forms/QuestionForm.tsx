@@ -7,7 +7,7 @@ import React, { useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { QuestionSchema } from "@/lib/validations";
+import { EditQuestionSchema, QuestionSchema } from "@/lib/validations";
 
 import { Button } from "../ui/button";
 import {
@@ -25,12 +25,18 @@ import { createQuestion } from "@/lib/actions/question.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
+import { Question } from "@/types/global";
 
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
   ssr: false,
 });
 
-const QuestionForm = () => {
+interface Params {
+  question?: Question;
+  isEdit?: boolean;
+}
+
+const QuestionForm = ({question, isEdit = false}: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isPending, startTransition] = useTransition();
@@ -38,9 +44,9 @@ const QuestionForm = () => {
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
+      title: question?.title ||"",
+      content: question?.content || "",
+      tags: question?.tags.map((tag) => tag.name) || [],
     },
   });
 
@@ -86,6 +92,24 @@ const QuestionForm = () => {
 
   const handleCreateQuestion = async (data: z.infer<typeof QuestionSchema>) => {
     startTransition(async () => {
+
+      if(isEdit && question) {
+        const result = await EditQuestionSchema({questionId: question?._id, ...data});
+        if(result.success) {
+          toast("Success", {
+            description: "Question Updated Successfully"
+    
+          })
+    
+          if(result.data) router.push(ROUTES.QUESTIONS(result.data._id));
+          
+        } else {
+          toast(`Error ${result.status}`, {
+            description: result.error?.message || "Something went wrong"
+          })
+        }
+        return
+      }
       const result = await createQuestion(data);
 
     if(result.success) {
@@ -208,7 +232,7 @@ const QuestionForm = () => {
                 <span>submitting</span>
               </>
             ) : (
-              <>Ask A Question</>
+              <>{isEdit ? "Edit" : "Ask a Question"}</>
             )}
           </Button>
         </div>
