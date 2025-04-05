@@ -1,13 +1,13 @@
 import ROUTES from '@/constants/routes';
 import { getTimeStamp } from '@/lib/utils';
-import { Question, Tag } from '@/types/global';
+import { IQuestion, Tag } from '@/types/global';
 import Link from 'next/link';
 import React from 'react'
 import TagCards from './TagCards';
 import Metric from '../Metric';
 
 interface Props {
-    question: Question;
+    question: IQuestion;
 }
 
 const QuestionCards = ({question: {_id, title, tags, author, createdAt, upvotes, answers, views}}: Props) => {

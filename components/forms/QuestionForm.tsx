@@ -25,14 +25,14 @@ import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
-import { Question } from "@/types/global";
+import { IQuestion } from "@/types/global";
 
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
   ssr: false,
 });
 
 interface Params {
-  question?: Question;
+  question?: IQuestion;
   isEdit?: boolean;
 }
 

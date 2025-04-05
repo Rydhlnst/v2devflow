@@ -11,7 +11,7 @@ interface Author {
     image: string;
 }
 
-interface Question {
+interface IQuestion {
     _id: string;
     title: string;
     content: string;
@@ -40,7 +40,7 @@ type ErrorResponse = ActionResponse<undefined> & {success: false};
 type APIErrorResponse = NextResponse<ErrorResponse>;
 type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
 
-export {Question, Tag, Author}
+export {IQuestion, Tag, Author}
 export type {APIErrorResponse, APIResponse, ActionResponse, ErrorResponse}
 
 interface RouterParams {
@@ -50,6 +50,7 @@ interface RouterParams {
   // SearchParams: /questions?tag=javascript
 }
 
+// Interface for paginated
 interface PaginatedSearchParams {
   page?: number;
   pageSize?: number;
@@ -57,5 +58,6 @@ interface PaginatedSearchParams {
   filter?: string;
   sort?: string
 }
+
 
 export {RouterParams, PaginatedSearchParams}

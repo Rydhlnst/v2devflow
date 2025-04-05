@@ -4,6 +4,7 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { getQuestions } from "@/lib/actions/question.action";
 import { api } from "@/lib/api";
 import handleError from "@/lib/handlers/error";
 import Link from "next/link";
@@ -16,43 +17,27 @@ const test = async () => {
   }
 }
 
-
-const questions = [
-  {
-    _id: "1",
-    title: "How to create a new react app?",
-    description: "I am trying to create a new react app but I am not able to do it. Can someone help me?",
-    tags: [
-      {_id: "1", name: "React"},
-      {_id: "2", name: "JavaScript"}
-    ],
-    author: {_id: "1", name: "John Doe", image: ""},
-    upvotes: 10,
-    answers: 5,
-    views: 100,
-    createdAt: new Date()
-  }
-]
-
 interface SearchParams {
   searchParams: Promise<{[key: string]: string}>
 }
 
 const Home = async ({searchParams}: SearchParams) => {
-  
+  const {page, pageSize, query, filter}= await searchParams;
+  const {success, data, error} = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query: query || "",
+    filter: filter || ""
+  })
+
+  const {questions} = data || {};
+
   const users = await test();
   console.log(users)
   const session = await auth();
 
   console.log("Session: ", session);
-  const {query = "", filter = ""} = await searchParams;
 
-  // Ga pakai kurung kurawal
-  const filteredQuestions = questions.filter((question) => {
-    const matchesQuery = question.title.toLowerCase().includes(query.toLowerCase());
-    const matchesFilter = filter ? question.tags[0].name.toLowerCase() === filter.toLowerCase() : true;
-    return matchesQuery && matchesFilter;
-  });
   return (
     <>
       <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -69,11 +54,21 @@ const Home = async ({searchParams}: SearchParams) => {
         />
       </section>
       <HomeFilter/>
-      <div className="mt-10 flex w-full flex-col gap-6">
-        {filteredQuestions.map((question) => (
-          <QuestionCards key={question._id} question={question}/>
-        ))}
-      </div>
+      {success ? (
+        <div className="mt-10 flex w-full flex-col gap-6">
+          {questions && questions.length>0 ? questions.map((question) => (
+            <QuestionCards key={question._id} question={question}/>
+          )): (
+            <div className="mt-10 flex w-full items-center justify-center">
+              <p className="text-dark400_light700">No Questions Found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-10 flex w-full items-center justify-center">
+              <p className="text-dark400_light700">{error?.message || "Failed to fetch Questions"}</p>
+        </div>
+      )}
     </>
   );
 }

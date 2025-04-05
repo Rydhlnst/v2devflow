@@ -1,17 +1,18 @@
 "use server"
 
 import { CreateQuestionParams, EditQuestionParams, GetQuestionParams } from "@/types/action";
-import { ActionResponse, ErrorResponse } from "@/types/global";
+import { ActionResponse, ErrorResponse, PaginatedSearchParams, IQuestion } from "@/types/global";
 import action from "../handlers/action";
-import { EditQuestionSchema, GetQuestionSchema, QuestionSchema } from "../validations";
+import { EditQuestionSchema, GetQuestionSchema, PaginatedSearchParamsSchema, QuestionSchema } from "../validations";
 import handleError from "../handlers/error";
-import mongoose from "mongoose"
-import Question from "@/database/question.model";
+import mongoose, { FilterQuery } from "mongoose"
 import Tag, { ITagDoc } from "@/database/tag.model";
+import Question, { IQuestionDoc } from "@/database/question.model";
 import TagQuestion from "@/database/tag-question.model";
 
 
-export async function createQuestion(params: CreateQuestionParams): Promise<ActionResponse<Question>> {
+
+export async function createQuestion(params: CreateQuestionParams): Promise<ActionResponse<IQuestion>> {
     // Only authorized can create question
     const validationResult = await action({params, schema: QuestionSchema, authorize: true});
 
@@ -67,7 +68,7 @@ export async function createQuestion(params: CreateQuestionParams): Promise<Acti
 
 export async function editQuestion(
     params: EditQuestionParams
-  ): Promise<ActionResponse<Question>> {
+  ): Promise<ActionResponse<IQuestionDoc>> {
     const validationResult = await action({
       params,
       schema: EditQuestionSchema,
@@ -102,11 +103,10 @@ export async function editQuestion(
       }
   
       const tagsToAdd = tags.filter(
-        (tag) => !question.tags.includes(tag.toLowerCase())
+        (tag) => !question.tags.some((t: ITagDoc) => t.name.toLowerCase().includes(tag.toLowerCase()))
       );
       const tagsToRemove = question.tags.filter(
-        (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase())
-      );
+        (tag: ITagDoc) => !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase()));
   
       const newTagDocuments = [];
   
@@ -144,7 +144,7 @@ export async function editQuestion(
         );
   
         question.tags = question.tags.filter(
-          (tagId: mongoose.Types.ObjectId) => !tagsToRemove.includes(tagId)
+          (tag: mongoose.Types.ObjectId) => !tagsToRemove.some((id: mongoose.Types.ObjectId) => id.equals(tag._id))
         );
       }
   
@@ -166,7 +166,7 @@ export async function editQuestion(
 
   export async function getQuestion(
     params: GetQuestionParams
-  ): Promise<ActionResponse<Question>> {
+  ): Promise<ActionResponse<IQuestion>> {
     const validationResult = await action({
       params,
       schema: GetQuestionSchema,
@@ -190,4 +190,54 @@ export async function editQuestion(
     } catch (error) {
       return handleError(error) as ErrorResponse;
     }
+  }
+
+  export async function getQuestions(params: PaginatedSearchParams): Promise<ActionResponse<{questions: IQuestion[]; isNext: boolean}>>{
+    const validationResult = await action({
+        params,
+        schema: PaginatedSearchParamsSchema
+    })
+
+    if(validationResult instanceof Error) {
+        return handleError(validationResult) as ErrorResponse;
+    }
+
+    // Akan mengambil params dari PaginatedSearchParams
+    const {page = 1, pageSize = 10, query, filter} = params;
+    const skip = (Number(page) - 1) * pageSize;
+    const limit = Number(pageSize);
+
+    const filterQuery: FilterQuery<typeof Question> = {};
+
+    if(filter === "recommended") return {success: true, data: {questions: [], isNext: false}};
+
+    if(query) {
+        filterQuery.$or = [
+            {title: {$regex: new RegExp(query, "i")}},
+            {content: {$regex: new RegExp(query, "i")}}
+        ]
+    }
+
+    let sortCriteria = {};
+
+    switch(filter) {
+        case "newest": sortCriteria = {createdAt: -1}; break;
+        case "unanswered": filterQuery.answers = 0; sortCriteria = {createdAt: -1}; break;
+        case "popular": sortCriteria = {upVotes: -1}; break;
+        default: sortCriteria = {createdAt: -1}; break;
+    }
+
+    try {
+        const totalQuestions = await Question.countDocuments(filterQuery);
+        const questions = await Question.find(filterQuery).populate("tags", "name").populate("author", "name image").lean().sort(sortCriteria).skip(skip).limit(limit);
+        const isNext = totalQuestions > skip + questions.length;
+
+        return {
+            success: true,
+            data: {questions: JSON.parse(JSON.stringify(questions)), isNext}
+        }
+    } catch (error) {
+        return handleError(error) as ErrorResponse;
+    }
+
   }
