@@ -78,3 +78,7 @@ export const EditQuestionSchema = QuestionSchema.extend({
 export const GetQuestionSchema = z.object({
     questionId: z.string().min(1, {message: "Question ID is required"}),
 })
+
+export const getTagQuestionSchema = PaginatedSearchParamsSchema.extend({
+    tagId: z.string().min(1, {message: "Tag ID is required."})
+})
