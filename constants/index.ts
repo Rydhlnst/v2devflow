@@ -22,7 +22,7 @@ export const sidebarLinks = [
     {
         imgUrl: "/icons/tag.svg",
         label: "Tags",
-        route: "/tag"
+        route: "/tags"
     },
     {
         imgUrl: "/icons/user.svg",

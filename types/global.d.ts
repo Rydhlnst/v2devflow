@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-interface Tag {
+interface ITag {
     _id: string;
     name: string;
 }
@@ -40,7 +40,7 @@ type ErrorResponse = ActionResponse<undefined> & {success: false};
 type APIErrorResponse = NextResponse<ErrorResponse>;
 type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
 
-export {IQuestion, Tag, Author}
+export {IQuestion, ITag, Author}
 export type {APIErrorResponse, APIResponse, ActionResponse, ErrorResponse}
 
 interface RouterParams {

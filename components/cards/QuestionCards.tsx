@@ -1,6 +1,6 @@
 import ROUTES from '@/constants/routes';
 import { getTimeStamp } from '@/lib/utils';
-import { IQuestion, Tag } from '@/types/global';
+import { IQuestion, ITag } from '@/types/global';
 import Link from 'next/link';
 import React from 'react'
 import TagCards from './TagCards';
@@ -23,7 +23,7 @@ const QuestionCards = ({question: {_id, title, tags, author, createdAt, upvotes,
         </div>
 
         <div className='mt-3.5 flex w-full flex-wrap gap-2'>
-            {tags.map((tag: Tag) => (
+            {tags.map((tag: ITag) => (
                 <TagCards key={tag._id} _id={tag._id} name={tag.name} compact questions={0}/>
             ))}
         </div>
