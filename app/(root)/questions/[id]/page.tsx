@@ -4,7 +4,7 @@ import React from 'react'
 const QuestionDetails = async ({params}: RouterParams) => {
     const {id} = await params;
   return (
-    <div>Question Page: {id}</div>
+    <div className="">Question Page: {id}</div>
   )
 }
 

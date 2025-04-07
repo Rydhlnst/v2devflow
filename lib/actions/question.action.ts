@@ -167,6 +167,7 @@ export async function editQuestion(
   export async function getQuestion(
     params: GetQuestionParams
   ): Promise<ActionResponse<IQuestion>> {
+    
     const validationResult = await action({
       params,
       schema: GetQuestionSchema,
@@ -228,6 +229,7 @@ export async function editQuestion(
     }
 
     try {
+
         const totalQuestions = await Question.countDocuments(filterQuery);
         const questions = await Question.find(filterQuery).populate("tags", "name").populate("author", "name image").lean().sort(sortCriteria).skip(skip).limit(limit);
         const isNext = totalQuestions > skip + questions.length;
