@@ -28,7 +28,7 @@ const QuestionCards = ({question: {_id, title, tags, author, createdAt, upvotes,
             ))}
         </div>
         <div className='flex flex-between mt-6 w-full gap-3'>
-            <Metric imgUrl={author.image} alt={author.name} value={author.name} title={`+ asked ${getTimeStamp(createdAt)}`} href={ROUTES.PROFILE(author._id)} textStyles="body-medium text-dark400_light700 " isAuthor/>
+            <Metric imgUrl={author.image} alt={author.name} value={author.name} title={`+ asked ${getTimeStamp(createdAt)}`} href={ROUTES.PROFILE(author._id)} textStyles="body-medium text-dark400_light700 " isAuthor titleStyles='max-sm:hidden'/>
             <div className='flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start'>
                 <Metric imgUrl="/icons/like.svg" alt="upvotes" value={upvotes} title="Votes" textStyles="small-medium text-dark400_light800"/>
                 <Metric imgUrl="/icons/message.svg" alt="answers" value={answers} title="Answers" textStyles="small-medium text-dark400_light800"/>

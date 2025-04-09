@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
 import { IQuestion } from "@/types/global";
 
-const Editor = dynamic(() => import("@/components/editor/Editor"), {
+const Editor = dynamic(() => import("@/components/editor/index"), {
   ssr: false,
 });
 
@@ -229,7 +229,7 @@ const QuestionForm = ({question, isEdit = false}: Params) => {
           >
             {isPending ? (
               <>
-                <span>submitting</span>
+                <span>Submitting</span>
               </>
             ) : (
               <>{isEdit ? "Edit" : "Ask a Question"}</>

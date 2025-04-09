@@ -27,7 +27,7 @@ export const SignUpSchema = z.object({
 
 export const QuestionSchema = z.object({
     title: z.string().min(1, {message: "Title is required"}).max(100, {message: "Title cannot exceed 100 characters"}),
-    content: z.string().min(1, {message: "Body is required"}).max(1000, {message: "Body cannot exceed 1000 characters"}),
+    content: z.string().min(1, {message: "Body is required"}),
     tags: z.array(z.string().min(1, {message: "Tag is required"}).max(30, {message: "Tag cannot exceed 30 characters"})).min(1, {message: "At least one tag is required"}).max(3, {message: "Cannot have more than 3 tags"})
 })
 
@@ -81,4 +81,8 @@ export const GetQuestionSchema = z.object({
 
 export const getTagQuestionSchema = PaginatedSearchParamsSchema.extend({
     tagId: z.string().min(1, {message: "Tag ID is required."})
+})
+
+export const IncrementViewsSchema = z.object({
+    questionId: z.string().min(1, {message: "Question ID is required"})
 })
