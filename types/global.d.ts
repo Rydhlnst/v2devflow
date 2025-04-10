@@ -59,5 +59,12 @@ interface PaginatedSearchParams {
   sort?: string
 }
 
+interface IAnswer {
+  _id: string;
+  author: Author;
+  content: string;
+  createdAt: Date;
+}
 
-export {RouterParams, PaginatedSearchParams}
+
+export {RouterParams, PaginatedSearchParams, IAnswer}

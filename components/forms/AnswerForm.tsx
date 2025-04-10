@@ -16,7 +16,7 @@ import { useRef, useState, useTransition } from "react"
 import dynamic from "next/dynamic"
 import { MDXEditorMethods } from "@mdxeditor/editor"
 import Image from "next/image"
-import { CreateAnswer } from "@/lib/actions/answer.action"
+import { createAnswer } from "@/lib/actions/answer.action"
 import { toast } from "sonner"
 import { useForm } from "react-hook-form"
 
@@ -37,7 +37,7 @@ const AnswerForm = ({questionId}: {questionId: string}) => {
 
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
     startAnsweringTransition(async () => {
-        const result = await CreateAnswer({
+        const result = await createAnswer({
             questionId, content: values.content
         })
     

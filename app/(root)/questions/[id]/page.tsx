@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
-import React, { Suspense } from "react";
+import React from "react";
 
-import AllAnswers from "@/components/answers/AllAnswers";
 // import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
 // import SaveQuestion from "@/components/questions/SaveQuestion";
@@ -19,6 +18,7 @@ import Preview from "@/components/editor/Preview";
 import { ITag, RouterParams } from "@/types/global";
 import TagCard from "@/components/cards/TagCards";
 import AnswerForm from "@/components/forms/AnswerForm";
+import { getAnswers } from "@/lib/actions/answer.action";
 
 const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   const { id } = await params;
@@ -30,6 +30,15 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   });
 
   if (!success || !question) return redirect("/404");
+
+  const {success: areAnswersLoaded, data: answersResult, error: answersError} = await getAnswers({
+    questionId: id,
+    page: 1,
+    filter: "latest",
+    pageSize: 10
+  })
+
+  console.log(answersResult);
 
   // const {
   //   success: areAnswersLoaded,
@@ -134,7 +143,7 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
       </div>
       
       <section className="my-5">
-        <AnswerForm questionId={questionId}/>
+        <AnswerForm questionId={question._id}/>
       </section>
 
       {/* <section className="my-5">
