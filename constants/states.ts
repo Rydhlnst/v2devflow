@@ -44,3 +44,12 @@ export const EMPTY_COLLECTIONS = {
         href: ROUTES.COLLECTION
     }
 }
+
+export const EMPTY_ANSWERS = {
+    title: "No Question Found",
+    message: "The answer board is empty. Make it rain with your brilliant answer",
+    // button: {
+    //     text: "Answer Question",
+    //     href: ROUTES.HOME
+    // }
+}

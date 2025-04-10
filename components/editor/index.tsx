@@ -41,7 +41,7 @@ interface Props {
   fieldChange: (value: string) => void;
 }
 
-const Editor = ({ value, editorRef, fieldChange }: Props) => {
+const Editor = ({ value, editorRef, fieldChange, ...props }: Props) => {
   const { resolvedTheme } = useTheme();
 
   const themeExtension = resolvedTheme === "dark" ? [basicDark] : [];
@@ -62,7 +62,7 @@ const Editor = ({ value, editorRef, fieldChange }: Props) => {
         markdownShortcutPlugin(),
         tablePlugin(),
         imagePlugin(),
-        codeBlockPlugin({ defaultCodeBlockLanguage: "Typescript (React)" }),
+        codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
         codeMirrorPlugin({
           codeBlockLanguages: {
             css: "css",

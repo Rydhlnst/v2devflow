@@ -19,6 +19,7 @@ import { ITag, RouterParams } from "@/types/global";
 import TagCard from "@/components/cards/TagCards";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/actions/answer.action";
+import AllAnswer from "@/components/answers/AllAnswer";
 
 const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   const { id } = await params;
@@ -143,27 +144,19 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
       </div>
       
       <section className="my-5">
-        <AnswerForm questionId={question._id}/>
-      </section>
-
-      {/* <section className="my-5">
-        <AllAnswers
-          page={Number(page) || 1}
-          isNext={answersResult?.isNext || false}
+        <AllAnswer
           data={answersResult?.answers}
           success={areAnswersLoaded}
           error={answersError}
           totalAnswers={answersResult?.totalAnswers || 0}
         />
-      </section> */}
+      </section>
 
-      {/* <section className="my-5">
-        <AnswerForm
-          questionId={question._id}
-          questionTitle={question.title}
-          questionContent={question.content}
-        />
-      </section> */}
+      <section className="my-5">
+        <AnswerForm questionId={question._id}/>
+      </section>
+
+      
     </>
   );
 };
