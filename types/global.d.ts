@@ -20,6 +20,7 @@ interface IQuestion {
     author: Author;
     createdAt: Date;
     upvotes: number;
+    downvotes: number;
     answers: number;
     views: number;
 }

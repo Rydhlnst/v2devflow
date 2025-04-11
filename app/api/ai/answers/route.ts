@@ -1,6 +1,5 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText } from 'ai';
-import { z } from 'zod';
 import { NextResponse } from 'next/server';
 import { AIAnswerSchema } from '@/lib/validations';
 import { ValidationError } from '@/lib/http-errors';

@@ -20,6 +20,7 @@ import TagCard from "@/components/cards/TagCards";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/actions/answer.action";
 import AllAnswer from "@/components/answers/AllAnswer";
+import Votes from "@/components/votes/Votes";
 
 const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   const { id } = await params;
@@ -38,8 +39,6 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
     filter: "latest",
     pageSize: 10
   })
-
-  console.log(answersResult);
 
   // const {
   //   success: areAnswersLoaded,
@@ -62,7 +61,6 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   // });
 
   const { author, createdAt, answers, views, tags, content, title } = question;
-  console.log("OpenRouter API Key:", process.env.OPENROUTER_API_KEY);
 
   return (
     <>
@@ -82,24 +80,9 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
             </Link>
           </div>
 
-          {/* <div className="flex items-center justify-end gap-4">
-            <Suspense fallback={<div>Loading...</div>}>
-              <Votes
-                targetType="question"
-                upvotes={question.upvotes}
-                downvotes={question.downvotes}
-                targetId={question._id}
-                hasVotedPromise={hasVotedPromise}
-              />
-            </Suspense>
-
-            <Suspense fallback={<div>Loading...</div>}>
-              <SaveQuestion
-                questionId={question._id}
-                hasSavedQuestionPromise={hasSavedQuestionPromise}
-              />
-            </Suspense>
-          </div> */}
+          <div className="flex justify-end">
+              <Votes upvotes={question.upvotes} hasUpVoted={true} downvotes={question.downvotes} hasDownVoted={true}/>
+          </div>
         </div>
 
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full">
