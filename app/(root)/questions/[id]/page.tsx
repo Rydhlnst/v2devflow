@@ -62,6 +62,7 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   // });
 
   const { author, createdAt, answers, views, tags, content, title } = question;
+  console.log("OpenRouter API Key:", process.env.OPENROUTER_API_KEY);
 
   return (
     <>

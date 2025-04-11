@@ -46,7 +46,7 @@ export const EMPTY_COLLECTIONS = {
 }
 
 export const EMPTY_ANSWERS = {
-    title: "No Question Found",
+    title: "No Answer Found",
     message: "The answer board is empty. Make it rain with your brilliant answer",
     // button: {
     //     text: "Answer Question",

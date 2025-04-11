@@ -4,7 +4,7 @@ import { IUser } from "@/database/user.model";
 
 import { fetchHandler } from "./handlers/fetch";
 import { SignInWithOAuthParams } from "@/types/action";
-import { APIResponse } from "@/types/global";
+import { ActionResponse, APIResponse } from "@/types/global";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
