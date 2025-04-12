@@ -24,6 +24,7 @@ import { getAnswers } from "@/lib/actions/answer.action";
 import { hasVoted } from "@/lib/actions/vote.action";
 import AllAnswer from "@/components/answers/AllAnswer";
 import Votes from "@/components/votes/Votes";
+import SaveQuestion from "@/components/questions/SaveQuestion";
 
 const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   const { id } = await params;
@@ -91,6 +92,9 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
           <div className="flex justify-end">
               <Suspense fallback={<div>Loading...</div>}>
                 <Votes targetType="question" targetId={question._id} upvotes={question.upvotes} downvotes={question.downvotes} hasVotedPromise={hasVotedPromise}/>
+              </Suspense>
+              <Suspense fallback={<div>Loading...</div>}>
+                <SaveQuestion questionId={question._id}/>
               </Suspense>
           </div>
         </div>
