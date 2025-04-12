@@ -1,14 +1,24 @@
 "use client"
 import { useSession } from 'next-auth/react'
 import Image from 'next/image';
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import { toast } from 'sonner';
 import {toogleSaveQuestion} from '@/lib/actions/collection.action';
+import { ActionResponse } from '@/types/global';
 
-const SaveQuestion = ({questionId} : {questionId: string}) => {
+interface Params {
+    questionId: string;
+    hasSavedQuestionPromise: Promise<ActionResponse<{saved: boolean}>>;
+}
+
+const SaveQuestion = ({questionId, hasSavedQuestionPromise} : Params) => {
     const session = useSession();
     const userId= session?.data?.user?.id;
     const [isLoading, setisLoading] = useState(false);
+
+    const {data} = use(hasSavedQuestionPromise);
+
+    const {saved: hasSaved} = data || {}; 
 
     const handleSave = async () => {
         if(!userId) return toast.error("You need to logged in to save a question")
@@ -27,9 +37,8 @@ const SaveQuestion = ({questionId} : {questionId: string}) => {
         }
     }
 
-    const hasSaved = false;
   return (
-    <Image src={hasSaved ? '/icons/star-filled.svg' : "/icons/star-red.svg"} width={18} height={18} alt='save' className={`cursor-pointer ${isLoading && "opacity-50"}`}/>
+    <Image src={hasSaved ? '/icons/star-filled.svg' : "/icons/star-red.svg"} width={18} height={18} alt='save' className={`cursor-pointer ${isLoading && "opacity-50"}`} onClick={handleSave}/>
   )
 }
 

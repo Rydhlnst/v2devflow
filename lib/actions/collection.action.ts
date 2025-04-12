@@ -1,3 +1,4 @@
+
 "use server"
 
 import { ActionResponse, ErrorResponse } from '@/types/global';
@@ -34,7 +35,9 @@ export async function toogleSaveQuestion(params: CollectionBaseParams): Promise<
         })
 
         if(collection) {
-            await Collection.findByIdAndDelete(collection.id);
+            await Collection.findByIdAndDelete(collection._id);
+
+            revalidatePath(ROUTES.QUESTIONS(questionId));
 
             return {
                 success: true,
@@ -49,7 +52,7 @@ export async function toogleSaveQuestion(params: CollectionBaseParams): Promise<
             author: userId
         });
 
-        revalidatePath(ROUTES.QUESTIONS(question));
+        revalidatePath(ROUTES.QUESTIONS(questionId));
 
         return {
             success: true,
@@ -63,3 +66,33 @@ export async function toogleSaveQuestion(params: CollectionBaseParams): Promise<
     }
 }
 
+export async function hasSavedQuestion(params: CollectionBaseParams): Promise<ActionResponse<{saved: boolean}>> {
+    const validationResult = await action({
+        params, schema: CollectionBaseSchema, authorize: true
+    })
+
+    if(validationResult instanceof Error) {
+        return handleError(validationResult) as ErrorResponse;
+    }
+
+    const {questionId} = validationResult.params!;
+    const userId = validationResult.session?.user?.id;
+
+    try {
+
+        const collection = await Collection.findOne({
+            question: questionId,
+            author: userId
+        })
+
+        return {
+            success: true,
+            data: {
+                saved: !!collection // true if collection exists, false otherwise
+            }
+        }
+
+    } catch (error) {
+        return handleError(error) as ErrorResponse
+    }
+}

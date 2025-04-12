@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 
 interface ITag {
@@ -69,5 +70,11 @@ interface IAnswer {
   downvotes: number
 }
 
+interface ICollection {
+  _id: string;
+  author: string | Author;
+  question: IQuestion
+}
 
-export {RouterParams, PaginatedSearchParams, IAnswer}
+
+export {ICollection, RouterParams, PaginatedSearchParams, IAnswer}
