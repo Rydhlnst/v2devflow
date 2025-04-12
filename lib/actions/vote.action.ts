@@ -1,9 +1,9 @@
 "use server"
 
-import { CreateVoteParams, UpdateVoteCountParams } from "@/types/action";
+import { CreateVoteParams, HasVotedParams, UpdateVoteCountParams } from "@/types/action";
 import { ActionResponse, ErrorResponse } from "@/types/global";
 import action from "../handlers/action";
-import { CreateVoteSchema, UpdateVoteCountSchema } from "../validations";
+import { CreateVoteSchema, HasVotedSchema, UpdateVoteCountSchema } from "../validations";
 import handleError from "../handlers/error";
 import mongoose, { ClientSession } from "mongoose"
 import { Answer, Question, Vote } from "@/database";
@@ -80,6 +80,43 @@ async function createVote(params: CreateVoteParams): Promise<ActionResponse> {
     } catch (error) {
         await session.abortTransaction()
         session.endSession();
+        return handleError(error) as ErrorResponse
+    }
+}
+
+// HasVotedResponse itu yang akan menjadi outputnya
+async function hasVoted(params: HasVotedParams): Promise<ActionResponse<HasVotedResponse>> {
+    const validationResult = await action({
+        params, schema: HasVotedSchema, authorize: true
+    })
+
+    if(validationResult instanceof Error) {
+        return handleError(validationResult) as ErrorResponse;
+    }
+
+    const {targetId, targetType} = validationResult.params!;
+    const userId = validationResult.session?.user?.id;
+
+    try {
+        const vote = await Vote.findOne({
+            author: userId, // userId
+            actionId: targetId, // questionId or answerId
+            actionType: targetType, //Upvote or Downvote
+        })
+
+        if(!vote) return {
+            success: false,
+            data: {hasUpvoted: false, hasDownvoted: false}
+        }
+
+        return {
+            success: true,
+            data: {
+                hasVoted: vote.voyeType === "upvote",
+                hasDownvoted: vote.voteType === "downvote"
+            }
+        }
+    } catch (error) {
         return handleError(error) as ErrorResponse
     }
 }
