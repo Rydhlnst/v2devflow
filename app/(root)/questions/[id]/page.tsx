@@ -90,7 +90,7 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
 
           <div className="flex justify-end">
               <Suspense fallback={<div>Loading...</div>}>
-                <Votes upvotes={question.upvotes} hasUpVoted={true} downvotes={question.downvotes} hasDownVoted={true} hasVotedPromise={hasVotedPromise}/>
+                <Votes targetType="question" targetId={question._id} upvotes={question.upvotes} downvotes={question.downvotes} hasVotedPromise={hasVotedPromise}/>
               </Suspense>
           </div>
         </div>
