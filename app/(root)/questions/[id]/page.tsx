@@ -1,7 +1,9 @@
+
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
-import React from "react";
+import React, { Suspense } from "react";
 
 // import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
@@ -19,6 +21,7 @@ import { ITag, RouterParams } from "@/types/global";
 import TagCard from "@/components/cards/TagCards";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/actions/answer.action";
+import { hasVoted } from "@/lib/actions/vote.action";
 import AllAnswer from "@/components/answers/AllAnswer";
 import Votes from "@/components/votes/Votes";
 
@@ -38,6 +41,11 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
     page: 1,
     filter: "latest",
     pageSize: 10
+  });
+
+  const hasVotedPromise = hasVoted({
+    targetId: question._id,
+    targetType: "question"
   })
 
   // const {
@@ -81,7 +89,9 @@ const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
           </div>
 
           <div className="flex justify-end">
-              <Votes upvotes={question.upvotes} hasUpVoted={true} downvotes={question.downvotes} hasDownVoted={true}/>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Votes upvotes={question.upvotes} hasUpVoted={true} downvotes={question.downvotes} hasDownVoted={true} hasVotedPromise={hasVotedPromise}/>
+              </Suspense>
           </div>
         </div>
 
