@@ -65,3 +65,7 @@ export interface HasVotedResponse {
     hasUpvoted: boolean;
     hasDownvoted: boolean;
 }
+
+export interface CollectionBaseParams {
+    questionId: string
+}
