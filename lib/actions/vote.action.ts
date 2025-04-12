@@ -66,7 +66,9 @@ export async function createVote(params: CreateVoteParams): Promise<ActionRespon
                 await Vote.deleteOne({_id: existingVote._id}).session(session);
                 await updateVoteCount({targetId, targetType, voteType, change: -1}, session);
             } else {
+                // If the user has already voted with a different voteType, update the voteType
                 await Vote.findByIdAndUpdate(existingVote._id, {voteType}, {new: true, session});
+                await updateVoteCount({targetId, targetType, voteType: existingVote.voteType, change: -1}, session);
                 await updateVoteCount({targetId, targetType, voteType, change: 1}, session);
             }
         } else {
