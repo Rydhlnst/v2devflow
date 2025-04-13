@@ -1,8 +1,10 @@
 import { auth } from "@/auth";
 import QuestionCards from "@/components/cards/QuestionCards";
 import DataRenderer from "@/components/DataRenderer";
+import CommonFilter from "@/components/filters/CommonFilter";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
+import { CollectionFilters } from "@/constants/filter";
 import ROUTES from "@/constants/routes";
 import { EMPTY_QUESTIONS } from "@/constants/states";
 import { getSavedQuestions } from "@/lib/actions/collection.action";
@@ -47,6 +49,7 @@ const Collection = async ({searchParams}: SearchParams) => {
         <LocalSearch 
           imgSrc={"/icons/search.svg"} placeholder="Search questions..." route={ROUTES.COLLECTION} otherClasses="flex-1" iconPosition="left"
         />
+        <CommonFilter filters={CollectionFilters} otherClasses="min-h-[56px] sm:min-w-[170px]"/>
       </div>
       <HomeFilter/>
       <DataRenderer
