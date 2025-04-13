@@ -53,3 +53,12 @@ export const EMPTY_ANSWERS = {
     //     href: ROUTES.HOME
     // }
 }
+
+export const EMPTY_USERS = {
+    title: "No User Found",
+    message: "You're alone. More users coming soon!",
+    button: {
+        text: "Create New Tag",
+        href: ROUTES.TAGS
+    }
+}

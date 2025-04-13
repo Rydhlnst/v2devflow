@@ -16,12 +16,11 @@ interface Props {
 const UserAvatar = ({id, name, imageUrl, className = "h-9 w-9", fallbackClassName}: Props) => {
     const initials = name.split(" ").map((word: string) => word[0]).join("").toUpperCase().slice(0, 2)
   return <Link href={ROUTES.PROFILE(id)}>
-    <Avatar className={className}>
+    <Avatar className={cn("relative", className)}>
         {imageUrl ? (
             <Image
                 alt={name}
-                height={36}
-                width={36}
+                fill
                 quality={100}
                 src={imageUrl}
             />

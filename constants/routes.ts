@@ -9,6 +9,7 @@ const ROUTES = {
     ASK_QUESTION: "/ask-question",
     QUESTIONS: (id: string) => `/questions/${id}`,
     SIGN_IN_WITH_OAUTH: `signin-with-oauth`,
+    COMMUNITY: "/community",
 }
 
 export default ROUTES
