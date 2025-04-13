@@ -4,10 +4,13 @@ import React from 'react'
 import { getHotQuestions } from '@/lib/actions/collection.action'
 import DataRenderer from '../DataRenderer'
 import ROUTES from '@/constants/routes'
+import { getTopTags } from '@/lib/actions/tag.action'
+import TagCards from '../cards/TagCards'
 
 const RightSideBar = async () => {
 
-    const {success, data: hotQuestions, error} = await getHotQuestions()
+    const {success, data: hotQuestions, error} = await getHotQuestions();
+    const {success: tagSuccess, data: tags, tagError} = await getTopTags();
 
   return (
     <section className='pt-36 custom-scrollbar background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[350px] flex-col gap-6 overflow-y-auto dark:shadow-none border-l p-6 shadow-light-300 max-xl:hidden'>
@@ -27,14 +30,18 @@ const RightSideBar = async () => {
                 </div>
             )}/>
         </div>
-        {/* <div className='mt-16'>
+        <div className='mt-16'>
             <h3 className='h3-bold text-dark200_light900'>Popular Tags</h3>
-            <div className='mt-7 flex flex-col gap-4'>
-                {popularTags.map(({_id, name, questions}) => (
+            <DataRenderer data={tags} error={tagError} success={tagSuccess} empty={{
+                title: "No Tags Found", message: "There are no tags found in this collection.",
+            }} render={(tags) => (
+                <div className='mt-7 flex w-full flex-col gap-4'>
+                    {tags.map(({_id, name, questions}) => (
                     <TagCards key={_id} _id={_id} name={name} questions={questions} showCount compact/>
                 ))}
-            </div>
-        </div> */}
+                </div>
+            )}/>
+        </div>
     </section>
   )
 }

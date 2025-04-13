@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 interface ITag {
     _id: string;
     name: string;
+    questions?: number;
 }
 
 interface Author {

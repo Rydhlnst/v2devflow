@@ -7,6 +7,7 @@ import handleError from "../handlers/error";
 import { Question, Tag } from "@/database";
 import { FilterQuery } from "mongoose";
 import { GetTagQuestionsParams } from "@/types/action";
+import dbConnect from "../mongoose";
 
 export const getTags = async (params: PaginatedSearchParams): Promise<ActionResponse<{tags: ITag[], isNext: boolean}>> => {
     const validationResult = await action({
@@ -90,6 +91,21 @@ export const getTagQuestions = async (params: GetTagQuestionsParams): Promise<Ac
         return {
             success: true,
             data: {tag: JSON.parse(JSON.stringify(tag)), questions: JSON.parse(JSON.stringify(questions)), isNext}
+        }
+    } catch (error) {
+        return handleError(error) as ErrorResponse
+    }
+}
+
+export const getTopTags = async (): Promise<ActionResponse<ITag[]>> => {
+    try {
+        await dbConnect();
+
+        const tags = await Tag.find().sort({questions: -1}).limit(5);
+
+        return {
+            success: true,
+            data: JSON.parse(JSON.stringify(tags))
         }
     } catch (error) {
         return handleError(error) as ErrorResponse
