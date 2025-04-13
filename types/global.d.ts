@@ -1,4 +1,5 @@
 
+import { LargeNumberLike } from "crypto";
 import { NextResponse } from "next/server";
 
 interface ITag {
@@ -87,7 +88,14 @@ interface IUser {
   location?: string;
   portfolio?: string;
   reputation?: number;
+  createdAt: Date
+}
+
+interface IBadgeCounts {
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number
 }
 
 
-export {ICollection, RouterParams, PaginatedSearchParams, IAnswer, IUser}
+export {ICollection, RouterParams, PaginatedSearchParams, IAnswer, IUser, IBadgeCounts}
