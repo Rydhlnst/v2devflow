@@ -69,3 +69,7 @@ export interface HasVotedResponse {
 export interface CollectionBaseParams {
     questionId: string
 }
+
+export interface GetUserParams {
+    userId: string
+}
