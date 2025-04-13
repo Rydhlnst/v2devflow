@@ -138,7 +138,7 @@ export async function getSavedQuestions(params: PaginatedSearchParams): Promise<
                 from: "users",
                 localField: "question.author",
                 foreignField: "_id",
-                as: "qestion.author"
+                as: "question.author"
             }},
             {$unwind: "$question.author"},
             {$lookup: {

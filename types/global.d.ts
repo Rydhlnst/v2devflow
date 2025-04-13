@@ -76,5 +76,17 @@ interface ICollection {
   question: IQuestion
 }
 
+interface IUser {
+  _id: string;
+  name: string;
+  username: string;
+  email: string;
+  bio?: string;
+  image?: string;
+  location?: string;
+  portfolio?: string;
+  reputation?: number;
+}
 
-export {ICollection, RouterParams, PaginatedSearchParams, IAnswer}
+
+export {ICollection, RouterParams, PaginatedSearchParams, IAnswer, IUser}

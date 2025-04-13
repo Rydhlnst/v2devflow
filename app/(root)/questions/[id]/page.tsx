@@ -27,9 +27,8 @@ import Votes from "@/components/votes/Votes";
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import { hasSavedQuestion } from "@/lib/actions/collection.action";
 
-const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
+const QuestionDetails = async ({ params }: RouterParams) => {
   const { id } = await params;
-  const { page, pageSize, filter } = await searchParams;
   const { success, data: question } = await getQuestion({ questionId: id });
 
   after(async () => {
