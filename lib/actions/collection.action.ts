@@ -1,7 +1,7 @@
 
 "use server"
 
-import { ActionResponse, ErrorResponse, ICollection, PaginatedSearchParams } from '@/types/global';
+import { ActionResponse, ErrorResponse, ICollection, IQuestion, PaginatedSearchParams } from '@/types/global';
 import { CollectionBaseParams } from "@/types/action";
 import { CollectionBaseSchema, PaginatedSearchParamsSchema } from '../validations';
 import action from '../handlers/action';
@@ -10,6 +10,7 @@ import { Collection, Question } from '@/database';
 import { revalidatePath } from 'next/cache';
 import ROUTES from '@/constants/routes';
 import mongoose, { PipelineStage } from 'mongoose';
+import dbConnect from '../mongoose';
 
 
 export async function toogleSaveQuestion(params: CollectionBaseParams): Promise<ActionResponse<{saved: boolean}>> {
@@ -186,5 +187,20 @@ export async function getSavedQuestions(params: PaginatedSearchParams): Promise<
     } catch (error) {
         return handleError(error) as ErrorResponse
 
+    }
+}
+
+export async function getHotQuestions(): Promise<ActionResponse<IQuestion[]>> {
+    try {
+        await dbConnect();
+
+        const questions = await Question.find().sort({views: -1, upvotes: -1}).limit(5);
+
+        return {
+            success: true,
+            data: JSON.parse(JSON.stringify(questions))
+        }
+    } catch (error) {
+        return handleError(error) as ErrorResponse
     }
 }

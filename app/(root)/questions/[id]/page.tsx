@@ -27,8 +27,9 @@ import Votes from "@/components/votes/Votes";
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import { hasSavedQuestion } from "@/lib/actions/collection.action";
 
-const QuestionDetails = async ({ params }: RouterParams) => {
+const QuestionDetails = async ({ params, searchParams }: RouterParams) => {
   const { id } = await params;
+  const {page, pageSize, filter} = await searchParams;
   const { success, data: question } = await getQuestion({ questionId: id });
 
   after(async () => {
@@ -39,9 +40,9 @@ const QuestionDetails = async ({ params }: RouterParams) => {
 
   const {success: areAnswersLoaded, data: answersResult, error: answersError} = await getAnswers({
     questionId: id,
-    page: 1,
-    filter: "latest",
-    pageSize: 10
+    page: Number(page) || 1,
+    filter,
+    pageSize: Number(pageSize) || 10
   });
 
   const hasVotedPromise = hasVoted({
@@ -52,26 +53,6 @@ const QuestionDetails = async ({ params }: RouterParams) => {
   const hasSavedQuestionPromise = hasSavedQuestion({
     questionId: question._id
   })
-
-  // const {
-  //   success: areAnswersLoaded,
-  //   data: answersResult,
-  //   error: answersError,
-  // } = await getAnswers({
-  //   questionId: id,
-  //   page: Number(page) || 1,
-  //   pageSize: Number(pageSize) || 10,
-  //   filter,
-  // });
-
-  // const hasVotedPromise = hasVoted({
-  //   targetId: question._id,
-  //   targetType: "question",
-  // });
-
-  // const hasSavedQuestionPromise = hasSavedQuestion({
-  //   questionId: question._id,
-  // });
 
   const { author, createdAt, answers, views, tags, content, title } = question;
 
@@ -147,6 +128,8 @@ const QuestionDetails = async ({ params }: RouterParams) => {
       
       <section className="my-5">
         <AllAnswer
+          isNext={answersResult?.isNext || false}
+          page={Number(page) || 1}
           data={answersResult?.answers}
           success={areAnswersLoaded}
           error={answersError}
