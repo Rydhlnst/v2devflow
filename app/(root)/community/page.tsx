@@ -20,7 +20,7 @@ const Community = async ({searchParams}: RouterParams) => {
 
 
   return (
-    <div className='flex flex-col'>
+    <div className=''>
       <h1 className='h1-bold text-dark100_light900'>All Users</h1>
       <div className='mt-11'>
         <LocalSearch route={ROUTES.COMMUNITY} iconPosition='left' imgSrc='/icons/search.svg' placeholder='Is there are what you searching for?' otherClasses='flex-1'/>
