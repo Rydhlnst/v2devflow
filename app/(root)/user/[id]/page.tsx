@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import ProfileLink from '@/components/user/ProfileLink';
 import UserAvatar from '@/components/UserAvatar';
-import { getUser } from '@/lib/actions/user.action'
+import { getUser, getUserQuestions, getUserAnswers } from '@/lib/actions/user.action'
 import { RouterParams } from '@/types/global'
 import { notFound } from 'next/navigation';
 import dayjs from 'dayjs';
@@ -11,9 +11,15 @@ import { Button } from '@/components/ui/button';
 import Stats from '@/components/user/Stats';
 import { Tabs, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 import { TabsList } from '@radix-ui/react-tabs';
+import { EMPTY_ANSWERS, EMPTY_QUESTIONS } from '@/constants/states';
+import DataRenderer from '@/components/DataRenderer';
+import QuestionCards from '@/components/cards/QuestionCards';
+import Pagination from '@/components/Pagination';
+import AnswerCard from '@/components/cards/AnswerCard';
 
-const UserPage = async ({params}: RouterParams) => {
+const UserPage = async ({params, searchParams}: RouterParams) => {
   const {id} = await params;
+  const {page, pageSize} = await searchParams;
 
   if(!id) notFound();
 
@@ -30,6 +36,22 @@ const UserPage = async ({params}: RouterParams) => {
   </div>
 
   const {user, totalQuestions, totalAnswers} = data!;
+
+  const {success: userQuestionSuccess, data: userQuestions, error: userQuestionError} = await getUserQuestions({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10
+  });
+
+  
+  const {success: successQuestionAnswers, data: userAnswers, error: errorQuestionAnswer} = await getUserAnswers({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10
+  });
+  
+  const {questions, isNext: hasMoreQuestions} = userQuestions!;
+  const {answers, isNext: hasMoreAnswers} = userAnswers!;
   return (
     <>
     
@@ -66,15 +88,29 @@ const UserPage = async ({params}: RouterParams) => {
       <Stats totalQuestions={totalQuestions} totalAnswers={totalAnswers} badges={{GOLD: 0, SILVER: 0, BRONZE: 0}}/>
       <section className='mt-10 flex gap-10'>
           <Tabs defaultValue="top-posts" className="flex-[2]">
-            <TabsList className="background-light800_dark400 min-h-[42px] p-1">
+            <TabsList className=" min-h-[42px] p-1 flex gap-2 w-[50%]">
               <TabsTrigger value="top-posts" className='tab'>Top Posts</TabsTrigger>
               <TabsTrigger value="answers" className='tab'>Answers</TabsTrigger>
             </TabsList>
             <TabsContent value='top-posts' className='mt-5 flex w-full flex-col gap-6'>
-                List of Questions
+              <DataRenderer data={questions} success={userQuestionSuccess} empty={EMPTY_QUESTIONS} error={userQuestionError} render={(questions) => (
+                <div className='flex w-full flex-col gap-6'>
+                    {questions.map((question) => (
+                      <QuestionCards question={question} key={question._id}/>
+                    ))}
+                </div>
+            )}/>
+            <Pagination page={page} isNext={hasMoreQuestions}/>
             </TabsContent>
             <TabsContent value='answers' className='mt-5 flex w-full flex-col gap-6'>
-                List of Answers
+              <DataRenderer data={answers} success={successQuestionAnswers} empty={EMPTY_ANSWERS} error={errorQuestionAnswer} render={(answers) => (
+                <div className='flex w-full flex-col gap-6'>
+                    {answers.map((answer) => (
+                      <AnswerCard key={answer._id} {...answer} content={answer.content.slice(0,27)} containerClasses="card-wrapper rounded-[10px] px-7 py-9 sm:px-11" showReadMore/>
+                    ))}
+                </div>
+            )}/>
+            <Pagination page={page} isNext={hasMoreAnswers || false}/>
             </TabsContent>
           </Tabs>
           <div className='flex w-full min-2-[250px] flex-1 flex-col max-lg:hidden'>

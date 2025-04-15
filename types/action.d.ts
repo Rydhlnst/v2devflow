@@ -73,3 +73,11 @@ export interface CollectionBaseParams {
 export interface GetUserParams {
     userId: string
 }
+
+export interface GetUserQUestionParams extends Omit<PaginatedSearchParams, "query" | "filter" | "sort"> {
+    userId: string;
+}
+
+interface GetUserAnswersParams extends PaginatedSearchParams {
+       userId: string;
+    }

@@ -68,7 +68,8 @@ interface IAnswer {
   content: string;
   createdAt: Date;
   upvotes: number;
-  downvotes: number
+  downvotes: number;
+  question: string;
 }
 
 interface ICollection {

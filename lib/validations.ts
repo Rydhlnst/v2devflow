@@ -1,4 +1,3 @@
-
 import {z} from "zod"
 
 export const SignInSchema = z.object({
@@ -125,5 +124,13 @@ export const CollectionBaseSchema = z.object({
 })
 
 export const GetUserSchema = z.object({
+    userId: z.string().min(1, {message: "User ID is required"})
+})
+
+export const GetUserQuestionSchema = PaginatedSearchParamsSchema.extend({
+    userId: z.string().min(1, {message: "User ID is required"})
+})
+
+export const GetUserAnswersSchema = PaginatedSearchParamsSchema.extend({
     userId: z.string().min(1, {message: "User ID is required"})
 })
