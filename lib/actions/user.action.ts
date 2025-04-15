@@ -1,5 +1,5 @@
-import { GetUserSchema } from './../validations';
 "use server"
+import { GetUserSchema } from './../validations';
 import User from '@/database/user.model';
 import { FilterQuery } from 'mongoose';
 
@@ -69,7 +69,7 @@ export async function getUser(params: GetUserParams): Promise<ActionResponse<{us
         return handleError(validationResult) as ErrorResponse;
     }
 
-    const userId = params
+    const {userId} = params
 
     try {
         const user = await User.findById(userId);
