@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import ProfileLink from '@/components/user/ProfileLink';
 import UserAvatar from '@/components/UserAvatar';
-import { getUser, getUserQuestions, getUserAnswers } from '@/lib/actions/user.action'
+import { getUser, getUserQuestions, getUsersAnswers, getUsersTopTags } from '@/lib/actions/user.action'
 import { RouterParams } from '@/types/global'
 import { notFound } from 'next/navigation';
 import dayjs from 'dayjs';
@@ -11,11 +11,12 @@ import { Button } from '@/components/ui/button';
 import Stats from '@/components/user/Stats';
 import { Tabs, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 import { TabsList } from '@radix-ui/react-tabs';
-import { EMPTY_ANSWERS, EMPTY_QUESTIONS } from '@/constants/states';
+import { EMPTY_ANSWERS, EMPTY_QUESTIONS, EMPTY_TAGS } from '@/constants/states';
 import DataRenderer from '@/components/DataRenderer';
 import QuestionCards from '@/components/cards/QuestionCards';
 import Pagination from '@/components/Pagination';
 import AnswerCard from '@/components/cards/AnswerCard';
+import TagCard from '@/components/cards/TagCards';
 
 const UserPage = async ({params, searchParams}: RouterParams) => {
   const {id} = await params;
@@ -44,14 +45,19 @@ const UserPage = async ({params, searchParams}: RouterParams) => {
   });
 
   
-  const {success: successQuestionAnswers, data: userAnswers, error: errorQuestionAnswer} = await getUserAnswers({
+  const {success: successQuestionAnswers, data: userAnswers, error: errorQuestionAnswer} = await getUsersAnswers({
     userId: id,
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10
   });
+
+  const {success: userSuccessTag, data: userTags, error: errorQuestionTags} = await getUsersTopTags({
+    userId: id,
+  });
   
   const {questions, isNext: hasMoreQuestions} = userQuestions!;
   const {answers, isNext: hasMoreAnswers} = userAnswers!;
+  const {tags} = userTags!;
   return (
     <>
     
@@ -116,7 +122,13 @@ const UserPage = async ({params, searchParams}: RouterParams) => {
           <div className='flex w-full min-2-[250px] flex-1 flex-col max-lg:hidden'>
               <h3 className='h3-bold text-dark200_light900'>Top Tags</h3>
               <div className='mt-7 flex flex-col gap-4'>
-                <p>List of tags</p>
+                <DataRenderer data={tags} success={userSuccessTag} empty={EMPTY_TAGS} error={errorQuestionTags} render={(tags) => (
+                <div className='flex mt-3 w-full flex-col gap-4'>
+                    {tags.map((tag) => (
+                      <TagCard key={tag._id} name={tag.name} questions={tag.count} _id={tag._id} showCount compact/>
+                    ))}
+                </div>
+            )}/>
               </div>
           </div>
       </section>

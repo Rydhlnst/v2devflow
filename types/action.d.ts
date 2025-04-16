@@ -81,3 +81,7 @@ export interface GetUserQUestionParams extends Omit<PaginatedSearchParams, "quer
 interface GetUserAnswersParams extends PaginatedSearchParams {
        userId: string;
     }
+
+interface GetUserTagsParams {
+    userId: string;
+}

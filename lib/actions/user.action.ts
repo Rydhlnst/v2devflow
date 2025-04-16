@@ -1,13 +1,13 @@
 "use server"
 import { GetUserSchema } from './../validations';
 import User from '@/database/user.model';
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, PipelineStage, Types } from 'mongoose';
 
 import { ActionResponse, ErrorResponse, IAnswer, IQuestion, IUser, PaginatedSearchParams } from "@/types/global";
 import { PaginatedSearchParamsSchema } from "../validations";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetUserAnswersParams, GetUserParams, GetUserQUestionParams } from '@/types/action';
+import { GetUserAnswersParams, GetUserParams, GetUserQUestionParams, GetUserTagsParams } from '@/types/action';
 import { Answer, Question } from '@/database';
 
 export async function getUsers(params: PaginatedSearchParams): Promise<ActionResponse<{users: IUser[], isNext: boolean}>> {
@@ -125,35 +125,95 @@ export async function getUserQuestions(params: GetUserQUestionParams): Promise<A
     }
 }
 
-export async function getUserAnswers(params: GetUserAnswersParams): Promise<ActionResponse<{answers: IAnswer[], isNext: boolean}>> {
-    const validationResult = await action({
-        params, schema: GetUserSchema
-    })
+export async function getUsersAnswers(params: GetUserAnswersParams): Promise<
+  ActionResponse<{
+    answers: IAnswer[];
+    isNext: boolean;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserSchema,
+  });
 
-    if (validationResult instanceof Error) {
-        return handleError(validationResult) as ErrorResponse;
-    }
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
 
-    const {userId, page = 1, pageSize = 10} = params;
-    const skip = (Number(page) - 1) * pageSize;
-    const limit = pageSize;
+  const { userId, page = 1, pageSize = 10 } = params;
 
-    try {
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = pageSize;
 
-        const totalAnswers = await Answer.countDocuments({ author: userId});
+  try {
+    const totalAnswers = await Answer.countDocuments({ author: userId });
 
-        const answers = await Question.find({author: userId}).skip(skip).limit(limit).populate("author", "_id name image");
+    const answers = await Answer.find({ author: userId })
+      .populate("author", "_id name image")
+      .skip(skip)
+      .limit(limit);
 
-        const isNext = totalAnswers > skip + answers.length;
+    const isNext = totalAnswers > skip + answers.length;
 
-        return {
-            success: true,
-            data: {
-                answers: JSON.parse(JSON.stringify(answers)),
-                isNext
-            }
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getUsersTopTags(params: GetUserTagsParams): Promise<
+  ActionResponse<{
+    tags: {_id: string, name: string, count: number}[];
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId } = params;
+
+  try {
+    const pipeline: PipelineStage[] = [
+        {$match: {author: new Types.ObjectId(userId)}},
+        {$unwind: "$tags"},
+        {$group: {_id: "$tags", count: {$sum: 1}}},
+        {$lookup: {
+            from: "tags",
+            localField: "_id",
+            foreignField: "_id",
+            as: "tagInfo"
+        }},
+        {$unwind: "$tagInfo"},
+        {$sort: {count: -1}},
+        {$limit: 10},
+        {$project: {
+            _id: "$tagInfo._id",
+            name: "$tagInfo.name",
+            count: 1
+        }}
+    ]
+
+    const tags = await Question.aggregate(pipeline);
+
+    return {
+        success: true,
+        data: {
+            tags: JSON.parse(JSON.stringify(tags))
         }
-    } catch (error) {
-        return handleError(error) as ErrorResponse
     }
+
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
 }
