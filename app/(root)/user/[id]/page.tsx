@@ -127,9 +127,9 @@ const UserPage = async ({params, searchParams}: RouterParams) => {
                     {tags.map((tag) => (
                       <TagCard key={tag._id} name={tag.name} questions={tag.count} _id={tag._id} showCount compact/>
                     ))}
-                </div>
-            )}/>
-              </div>
+                  </div>
+                )}/>
+            </div>
           </div>
       </section>
     </>

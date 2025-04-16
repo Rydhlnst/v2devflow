@@ -22,6 +22,7 @@ import { createAnswer } from "@/lib/actions/answer.action";
 import { api } from "@/lib/api";
 import { AnswerSchema } from "@/lib/validations";
 import { toast } from "sonner";
+import LanguageSelector from "../languageSelector/LanguageSelector";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
@@ -36,6 +37,7 @@ interface Props {
 const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
   const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
+  const [language, setLanguage] = useState("id"); // default Bahasa Indonesia
   const session = useSession();
 
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -72,36 +74,47 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
     });
   };
 
-  const generateAIAnswer = async () => {
+  const generateAIAnswer = async (language: string) => {
     if (session.status !== "authenticated") {
       return toast("Please log in",{
         description: "You need to be logged in to use this feature",
       });
     }
-
+  
     setIsAISubmitting(true);
-
+  
     try {
       const { success, data, error } = await api.ai.getAnswer(
         questionTitle,
-        questionContent
+        questionContent,
+        language
       );
-
+  
+      console.log("Generated Answer: ", data);  // Cek jawaban yang dihasilkan oleh AI
+  
       if (!success) {
         return toast("Error", {
           description: error?.message,
         });
       }
-
-      const formattedAnswer = data.replace(/<br>/g, " ").toString().trim();
+  
+      // const formattedAnswer = data.replace(/<br>/g, " ").toString().trim();
+  
+      const formattedAnswer = data
+      .replace(/&#20;/g, " ")
+      .replace(/<br>/g, " ")
+      .replace(/-{4,}/g, "---") // prevent broken thematic break
+      .replace(/\\/g, "") // remove unnecessary backslashes
+      .toString()
+      .trim();
 
       if (editorRef.current) {
         editorRef.current.setMarkdown(formattedAnswer);
-
+  
         form.setValue("content", formattedAnswer);
         form.trigger("content");
       }
-
+  
       toast("Success", {
         description: "AI generated answer has been generated",
       });
@@ -116,6 +129,8 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
       setIsAISubmitting(false);
     }
   };
+  
+  
 
   return (
     <div>
@@ -123,10 +138,11 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
         <h4 className="paragraph-semibold text-dark400_light800">
           Write your answer here
         </h4>
+        <LanguageSelector setLanguage={setLanguage} />
         <Button
           className="btn light-border-2 gap-1.5 rounded-md border px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           disabled={isAISubmitting}
-          onClick={generateAIAnswer}
+          onClick={() =>{console.log(language); generateAIAnswer(language)}}
         >
           {isAISubmitting ? (
             <>

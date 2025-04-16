@@ -8,9 +8,10 @@ import { APIErrorResponse } from '@/types/global';
 
 export async function POST(req: Request) {
   try {
-    const { question, content } = await req.json();
+    const { question, content, language } = await req.json();
 
-    const validated = AIAnswerSchema.safeParse({ question, content });
+    // Validasi data dengan schema
+    const validated = AIAnswerSchema.safeParse({ question, content, language });
     if (!validated.success) {
       throw new ValidationError(validated.error.flatten().fieldErrors);
     }
@@ -19,15 +20,20 @@ export async function POST(req: Request) {
       apiKey: process.env.OPENROUTER_API_KEY!,
     });
 
+    // Menambahkan informasi bahasa dalam prompt
+    const prompt = `Generate a markdown-formatted response to the following question in ${language}: ${question}. Base it on the provided content:\n\n${content}`;
+
+    // Menyiapkan permintaan streamText
     const response = streamText({
-      model: openrouter('openai/gpt-3.5-turbo'), // Ganti dengan model lain kalau mau (pastikan valid)
-      prompt: `Generate a markdown-formatted response to the following question: ${question}. Base it on the provided content:\n\n${content}`,
+      model: openrouter('openai/gpt-3.5-turbo'),
+      prompt,
       system: "You are a helpful assistant that provides informative responses in markdown format.",
     });
 
-    await response.consumeStream(); // Penting biar bisa diakses
+    await response.consumeStream(); // Penting agar dapat diakses
     const finalText = await response.text;
-    return NextResponse.json({ success: true, data:finalText }, { status: 200 });
+
+    return NextResponse.json({ success: true, data: finalText }, { status: 200 });
 
   } catch (error) {
     return handleError(error, 'api') as APIErrorResponse;

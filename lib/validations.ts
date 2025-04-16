@@ -1,3 +1,4 @@
+import { LANGUAGE_NAMES } from "@/constants/language"
 import {z} from "zod"
 
 export const SignInSchema = z.object({
@@ -101,7 +102,15 @@ export const GetAnswerSchema = PaginatedSearchParamsSchema.extend({
 
 export const AIAnswerSchema = z.object({
     question: z.string().min(5, {message: "Question is required"}).max(130, {message: "Question cannot exceed 130 characters"}),
-    content: z.string().min(100, {message: "Answer has to have more than 100 characters"})
+    content: z.string().min(100, {message: "Answer has to have more than 100 characters"}),
+    language: z.enum(LANGUAGE_NAMES, {
+        errorMap: (issue) => {
+          if (issue.code === "invalid_enum_value") {
+            return { message: "Please select a valid language" };
+          }
+          return { message: "Invalid value" };
+        },
+      }),
 })
 
 export const CreateVoteSchema = z.object({
