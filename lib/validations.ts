@@ -1,4 +1,5 @@
-import { LANGUAGE_NAMES } from "@/constants/language"
+
+import { LANGUAGE_OPTIONS } from "@/constants/language"
 import {z} from "zod"
 
 export const SignInSchema = z.object({
@@ -100,18 +101,25 @@ export const GetAnswerSchema = PaginatedSearchParamsSchema.extend({
     questionId: z.string().min(1, {message: "Question ID is required"})
 })
 
+const languageValues = LANGUAGE_OPTIONS.map(lang => lang.value) as [string, ...string[]];
+
 export const AIAnswerSchema = z.object({
-    question: z.string().min(5, {message: "Question is required"}).max(130, {message: "Question cannot exceed 130 characters"}),
-    content: z.string().min(100, {message: "Answer has to have more than 100 characters"}),
-    language: z.enum(LANGUAGE_NAMES, {
-        errorMap: (issue) => {
-          if (issue.code === "invalid_enum_value") {
-            return { message: "Please select a valid language" };
-          }
-          return { message: "Invalid value" };
-        },
-      }),
-})
+    question: z
+      .string()
+      .min(5, { message: "Question is required" })
+      .max(130, { message: "Question cannot exceed 130 characters" }),
+    content: z
+      .string()
+      .min(100, { message: "Answer has to have more than 100 characters" }),
+    language: z.enum(languageValues, {
+      errorMap: (issue) => {
+        if (issue.code === "invalid_enum_value") {
+          return { message: "Please select a valid language" };
+        }
+        return { message: "Invalid value" };
+      },
+    }),
+  });
 
 export const CreateVoteSchema = z.object({
     targetId: z.string().min(1, {message: "Target ID is required"}),

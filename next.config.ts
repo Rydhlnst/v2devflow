@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   serverExternalPackages: ["pino", "pino-pretty"],
   images: {
+    domains: [
+      "flagcdn.com", "images.unsplash.com", "cdn.example.com"
+    ],
     remotePatterns: [
       {
         protocol: "https",
