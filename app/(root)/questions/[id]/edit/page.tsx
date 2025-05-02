@@ -22,7 +22,7 @@ const EditQuestion = async ({ params }: RouterParams) => {
   console.log("Session User ID:", session.user.id, "Type:", typeof session.user.id);
   console.log("Equality Check:", question.author._id === session.user.id);
 
-  if (question.author._id !== session.user.id) {
+  if (question?.author._id.toString() !== session?.user?.id) {
     return redirect(ROUTES.QUESTIONS(id));  // Return to prevent execution
   }else{
     return (

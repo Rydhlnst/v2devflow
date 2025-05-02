@@ -102,7 +102,7 @@ const UserPage = async ({params, searchParams}: RouterParams) => {
               <DataRenderer data={questions} success={userQuestionSuccess} empty={EMPTY_QUESTIONS} error={userQuestionError} render={(questions) => (
                 <div className='flex w-full flex-col gap-6'>
                     {questions.map((question) => (
-                      <QuestionCards question={question} key={question._id}/>
+                      <QuestionCards question={question} key={question._id} showActionBtns={loggedInUser?.user?.id === question.author._id}/>
                     ))}
                 </div>
             )}/>
@@ -110,9 +110,9 @@ const UserPage = async ({params, searchParams}: RouterParams) => {
             </TabsContent>
             <TabsContent value='answers' className='mt-5 flex w-full flex-col gap-6'>
               <DataRenderer data={answers} success={successQuestionAnswers} empty={EMPTY_ANSWERS} error={errorQuestionAnswer} render={(answers) => (
-                <div className='flex w-full flex-col gap-6'>
+                <div className='flex w-full flex-col gap-10'>
                     {answers.map((answer) => (
-                      <AnswerCard key={answer._id} {...answer} content={answer.content.slice(0,27)} containerClasses="card-wrapper rounded-[10px] px-7 py-9 sm:px-11" showReadMore/>
+                      <AnswerCard key={answer._id} {...answer} content={answer.content.slice(0,27)} showActionBtns={loggedInUser?.user?.id === answer.author._id} containerClasses="card-wrapper rounded-[10px] px-7 py-9 sm:px-11" showReadMore/>
                     ))}
                 </div>
             )}/>
